@@ -3,7 +3,7 @@ const { check } = require('express-validator');
 
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { validarInputs } = require('../middlewares/validar-inputs');
-const { obtenerProductos, obtenerProducto, crearProducto, actualizarProducto, eliminarProducto } = require('../controllers/producto');
+const { obtenerProductos, obtenerProducto, crearProducto, actualizarProducto, eliminarProducto, obtenerProductoCategoria } = require('../controllers/producto');
 const { productoExiste, categoriaExiste } = require('../helpers/db-validators');
 
 const router = Router();
@@ -17,6 +17,13 @@ router.get('/:id', [
     check('id').custom(productoExiste),
     validarInputs
 ], obtenerProducto)
+
+/* obtener producto por categoria */
+router.get('/categoria/:id', [
+    check('id', 'Ingrese un id válido').isMongoId(),
+    check('id').custom(categoriaExiste),
+    validarInputs
+], obtenerProductoCategoria)
 
 
 /* crear un nuevo producto */

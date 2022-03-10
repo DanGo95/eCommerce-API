@@ -1,12 +1,25 @@
 const { response } = require("express");
+const producto = require("../models/producto");
 const Producto = require("../models/producto");
 
 /* obtener todos los productos */
 const obtenerProductos = async(req, res = response) => {
 
-    const productos = await Producto.find().populate('usuario', 'email');
+    var { page = 0 } = req.query;
+    page = page * 10;
 
-    res.json(productos)
+    const [total, productos] = await Promise.all([
+        Producto.countDocuments(),
+        Producto.find()
+        .populate('usuario', 'email')
+        .skip(Number(page))
+        .limit(10)
+    ]);
+
+    res.json({
+        total,
+        productos
+    })
 
 }
 
@@ -18,6 +31,21 @@ const obtenerProducto = async(req, res = response) => {
 
     res.json({
         producto
+    })
+
+}
+
+/* obtener producto por categoría */
+const obtenerProductoCategoria = async(req, res = response) => {
+
+
+    const { id } = req.params;
+    var { cantidad, page = 0 } = req.query;
+    page = page * cantidad;
+    const productos = await Producto.find({ categoria: id }).limit(cantidad).skip(page);
+
+    res.json({
+        productos
     })
 
 }
@@ -77,5 +105,6 @@ module.exports = {
     crearProducto,
     eliminarProducto,
     obtenerProducto,
-    obtenerProductos
+    obtenerProductos,
+    obtenerProductoCategoria
 }

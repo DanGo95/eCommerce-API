@@ -3,6 +3,7 @@ const { Schema, model } = require('mongoose');
 const ProductoSchema = new Schema({
     categoria: { type: Schema.Types.ObjectId, ref: 'Categoria', required: true },
     descripcion: { type: String, required: [true, 'La descripcion es obligatoria'] },
+    fecha: { type: Date, default: Date.now },
     imagen: { type: String, required: [true, 'La imagen es obligatoria'] },
     nombre: { type: String, required: [true, 'El nombre es obligatorio'] },
     precio: { type: Number, default: 0 },
